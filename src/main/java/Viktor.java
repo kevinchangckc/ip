@@ -422,7 +422,7 @@ public class Viktor {
                     Task newTask = new Event(parts[0], parts[1], parts[2]);
                     tasks.add(newTask);
                     System.out.println("_________________________________________");
-                    System.out.println("Got it. I've added this task:");
+                    System.out.println("Noted. I've added this task:");
                     System.out.println(newTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println("_________________________________________");

@@ -1,4 +1,7 @@
 import java.util.Scanner;
+import java.io.*;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /*  level-0
 public class Viktor {
@@ -99,10 +102,9 @@ public class Viktor {
 
 
 // level-3
-import java.util.ArrayList;
 
 // universal Task class
-class Task {
+abstract class Task {
     protected String description;
     protected boolean isDone;
 
@@ -122,6 +124,9 @@ class Task {
     public String getStatusIcon() {
         return (isDone ? "[X]" : "[ ]");
     }
+
+    // 🔹 Abstract method that subclasses must implement
+    public abstract String toFileFormat();
 
     @Override
     public String toString() {
@@ -199,6 +204,11 @@ class ToDo extends Task {
     }
 
     @Override
+    public String toFileFormat() {
+        return "T | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
+    @Override
     public String toString() {
         return "[T]" + super.toString();
     }
@@ -210,6 +220,11 @@ class Deadline extends Task {
     public Deadline(String description, String by) {
         super(description);
         this.by = by;
+    }
+
+    @Override
+    public String toFileFormat() {
+        return "D | " + (isDone ? "1" : "0") + " | " + description + " | " + by;
     }
 
     @Override
@@ -226,6 +241,11 @@ class Event extends Task {
         super(description);
         this.from = from;
         this.to = to;
+    }
+
+    @Override
+    public String toFileFormat() {
+        return "E | " + (isDone ? "1" : "0") + " | " + description + " | " + from + " | " + to;
     }
 
     @Override
@@ -442,3 +462,72 @@ public class Viktor {
         scanner.close();
     }
 }
+
+// Level-7
+ class Storage {
+    private String filePath;
+
+    public Storage(String filePath) {
+        this.filePath = filePath;
+    }
+
+    // Load tasks from file
+    public ArrayList<Task> load() throws IOException {
+        ArrayList<Task> tasks = new ArrayList<>();
+        File file = new File(filePath);
+
+        if (!file.exists()) {
+            System.out.println("No previous tasks found. Starting fresh!");
+            return tasks; // Return an empty task list
+        }
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(" \\| ");
+                if (parts.length < 3) continue; // Skip invalid lines
+
+                String type = parts[0];
+                boolean isDone = parts[1].equals("1");
+                String description = parts[2];
+
+                Task task;
+                switch (type) {
+                    case "T":
+                        task = new ToDo(description);
+                        break;
+                    case "D":
+                        task = new Deadline(description, parts[3]);
+                        break;
+                    case "E":
+                        task = new Event(description, parts[3], parts[4]);
+                        break;
+                    default:
+                        continue; // Skip unknown task types
+                }
+                if (isDone) task.markAsDone();
+                tasks.add(task);
+            }
+        } catch (Exception e) {
+            System.out.println("Warning: Corrupted data file. Starting fresh!");
+            tasks.clear(); // Clear and start new list
+        }
+        return tasks;
+    }
+
+    // Save tasks to file
+    public void save(ArrayList<Task> tasks) throws IOException {
+        File file = new File(filePath);
+        File directory = file.getParentFile();
+        if (directory != null && !directory.exists()) {
+            directory.mkdirs(); // Create directories if they don’t exist
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Task task : tasks) {
+                writer.write(task.toFileFormat() + "\n");
+            }
+        }
+    }
+}
+

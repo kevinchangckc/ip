@@ -3,106 +3,6 @@ import java.io.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/*  level-0
-public class Viktor {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("_________________________________________");
-        System.out.println("Hi there. I'm Viktor.");
-        System.out.println("How can I help you?");
-        System.out.println("_________________________________________");
-
-        // Simulating simple interaction
-        String input = scanner.nextLine();
-
-        System.out.println("_________________________________________");
-        System.out.println("Bye. Hope to see you again soon.");
-        System.out.println("_________________________________________");
-
-        scanner.close();
-    }
-}
- */
-
-/* level-1
-public class Viktor {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("_________________________________________");
-        System.out.println("Hi there. I'm Viktor.");
-        System.out.println("How can I help you?");
-        System.out.println("_________________________________________");
-
-        while (true) {
-            String input = scanner.nextLine();
-
-            if (input.equalsIgnoreCase("bye")) {
-                System.out.println("_________________________________________");
-                System.out.println("Bye. Hope to see you again soon.");
-                System.out.println("_________________________________________");
-                break;  // Exit the loop
-            }
-
-            System.out.println("_________________________________________");
-            System.out.println(input);  // Echoes back user input
-            System.out.println("_________________________________________");
-        }
-
-        scanner.close();
-    }
-}
-
- */
-
-
-/* level-2
-import java.util.ArrayList;
-import java.util.Scanner;
-
-public class Viktor {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<String> tasks = new ArrayList<>();
-
-        System.out.println("_________________________________________");
-        System.out.println("Hi there. I'm Viktor.");
-        System.out.println("How can I help you?");
-        System.out.println("_________________________________________");
-
-        while (true) {
-            String input = scanner.nextLine();
-
-            if (input.equalsIgnoreCase("bye")) {
-                System.out.println("_________________________________________");
-                System.out.println("Bye. Hope to see you again soon.");
-                System.out.println("_________________________________________");
-                break;
-            } else if (input.equalsIgnoreCase("list")) {
-                System.out.println("_________________________________________");
-                System.out.println("Here are your tasks:");
-                for (int i = 0; i < tasks.size(); i++) {
-                    System.out.println((i + 1) + ". " + tasks.get(i));
-                }
-                System.out.println("_________________________________________");
-            } else {
-                tasks.add(input);
-                System.out.println("_________________________________________");
-                System.out.println("Added: " + input);
-                System.out.println("_________________________________________");
-            }
-        }
-
-        scanner.close();
-    }
-}
-
- */
-
-
-// level-3
-
 // universal Task class
 abstract class Task {
     protected String description;
@@ -133,69 +33,6 @@ abstract class Task {
         return getStatusIcon() + " " + description;
     }
 }
-
-/*
-public class Viktor {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
-
-        System.out.println("_________________________________________");
-        System.out.println("Hi there. I'm Viktor.");
-        System.out.println("How can I help you?");
-        System.out.println("_________________________________________");
-
-        while (true) {
-            String input = scanner.nextLine();
-
-            if (input.equalsIgnoreCase("bye")) {
-                System.out.println("_________________________________________");
-                System.out.println("Bye. Hope to see you again soon.");
-                System.out.println("_________________________________________");
-                break;
-            } else if (input.equalsIgnoreCase("list")) {
-                System.out.println("_________________________________________");
-                System.out.println("Here are your tasks:");
-                for (int i = 0; i < tasks.size(); i++) {
-                    System.out.println((i + 1) + ". " + tasks.get(i));
-                }
-                System.out.println("_________________________________________");
-            } else if (input.startsWith("mark ")) {
-                try {
-                    int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
-                    tasks.get(taskIndex).markAsDone();
-                    System.out.println("_________________________________________");
-                    System.out.println("Nice! I've marked this task as done:");
-                    System.out.println(tasks.get(taskIndex));
-                    System.out.println("_________________________________________");
-                } catch (Exception e) {
-                    System.out.println("Invalid task number.");
-                }
-            } else if (input.startsWith("unmark ")) {
-                try {
-                    int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
-                    tasks.get(taskIndex).markAsNotDone();
-                    System.out.println("_________________________________________");
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println(tasks.get(taskIndex));
-                    System.out.println("_________________________________________");
-                } catch (Exception e) {
-                    System.out.println("Invalid task number.");
-                }
-            } else {
-                Task newTask = new Task(input);
-                tasks.add(newTask);
-                System.out.println("_________________________________________");
-                System.out.println("Added: " + newTask);
-                System.out.println("_________________________________________");
-            }
-        }
-
-        scanner.close();
-    }
-}
-
- */
 
 // Level-4
 class ToDo extends Task {
@@ -254,120 +91,6 @@ class Event extends Task {
     }
 }
 
- /*
-public class Viktor {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
-
-        System.out.println("_________________________________________");
-        System.out.println("Hi there. I'm Viktor.");
-        System.out.println("How can I help you?");
-        System.out.println("_________________________________________");
-
-        while (true) {
-            String input = scanner.nextLine();
-
-            // Exit program
-            if (input.equalsIgnoreCase("bye")) {
-                System.out.println("_________________________________________");
-                System.out.println("Bye. Hope to see you again soon.");
-                System.out.println("_________________________________________");
-                break;
-            }
-
-            // List all tasks
-            else if (input.equalsIgnoreCase("list")) {
-                System.out.println("_________________________________________");
-                System.out.println("Here are the tasks in your list:");
-                for (int i = 0; i < tasks.size(); i++) {
-                    System.out.println((i + 1) + ". " + tasks.get(i));
-                }
-                System.out.println("_________________________________________");
-            }
-
-            // Mark a task as done
-            else if (input.startsWith("mark ")) {
-                try {
-                    int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
-                    tasks.get(taskIndex).markAsDone();
-                    System.out.println("_________________________________________");
-                    System.out.println("Nice! I've marked this task as done:");
-                    System.out.println(tasks.get(taskIndex));
-                    System.out.println("_________________________________________");
-                } catch (Exception e) {
-                    System.out.println("Invalid task number.");
-                }
-            }
-
-            // Unmark a task
-            else if (input.startsWith("unmark ")) {
-                try {
-                    int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
-                    tasks.get(taskIndex).markAsNotDone();
-                    System.out.println("_________________________________________");
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println(tasks.get(taskIndex));
-                    System.out.println("_________________________________________");
-                } catch (Exception e) {
-                    System.out.println("Invalid task number.");
-                }
-            }
-
-            // Add a ToDo task
-            else if (input.startsWith("todo ")) {
-                String taskDescription = input.substring(5);
-                Task newTask = new ToDo(taskDescription);
-                tasks.add(newTask);
-                System.out.println("_________________________________________");
-                System.out.println("Got it. I've added this task:");
-                System.out.println(newTask);
-                System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                System.out.println("_________________________________________");
-            }
-
-            // Add a Deadline task
-            else if (input.startsWith("deadline ")) {
-                String[] parts = input.substring(9).split(" /by ");
-                if (parts.length == 2) {
-                    Task newTask = new Deadline(parts[0], parts[1]);
-                    tasks.add(newTask);
-                    System.out.println("_________________________________________");
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println(newTask);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println("_________________________________________");
-                } else {
-                    System.out.println("Invalid deadline format. Use: deadline <task> /by <date/time>");
-                }
-            }
-
-            // Add an Event task
-            else if (input.startsWith("event ")) {
-                String[] parts = input.substring(6).split(" /from | /to ");
-                if (parts.length == 3) {
-                    Task newTask = new Event(parts[0], parts[1], parts[2]);
-                    tasks.add(newTask);
-                    System.out.println("_________________________________________");
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println(newTask);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println("_________________________________________");
-                } else {
-                    System.out.println("Invalid event format. Use: event <task> /from <start time> /to <end time>");
-                }
-            }
-
-            // Invalid command
-            else {
-                System.out.println("Sorry, I don't understand that command.");
-            }
-        }
-
-        scanner.close();
-    }
-}
-  */
 
 // Level-5
 class ViktorException extends Exception {
@@ -377,7 +100,21 @@ class ViktorException extends Exception {
 }
 
 public class Viktor {
+    private static final String FILE_PATH = "./data/viktor.txt"; // Ensure correct path
+    private static Storage storage;
+    private static ArrayList<Task> tasks;
+
     public static void main(String[] args) {
+        storage = new Storage(FILE_PATH);
+
+        // Load tasks from file
+        try {
+            tasks = storage.load();
+        } catch (IOException e) {
+            System.out.println("Error loading tasks from file. Starting fresh.");
+            tasks = new ArrayList<>();
+        }
+
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks = new ArrayList<>();
 
@@ -394,6 +131,7 @@ public class Viktor {
                     System.out.println("_________________________________________");
                     System.out.println("Goodbye! Have a great day.");
                     System.out.println("_________________________________________");
+                    storage.save(tasks); // Save before exit
                     break;
                 }
 
@@ -424,6 +162,7 @@ public class Viktor {
                         System.out.println(removedTask);
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                         System.out.println("_________________________________________");
+                        storage.save(tasks);
 
                     } catch (NumberFormatException e) {
                         throw new ViktorException("Oops! Task number must be a valid number.");
@@ -442,6 +181,7 @@ public class Viktor {
                     System.out.println(newTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println("_________________________________________");
+                    storage.save(tasks);
                 }
 
                 else if (input.startsWith("deadline")) {
@@ -456,6 +196,7 @@ public class Viktor {
                     System.out.println(newTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println("_________________________________________");
+                    storage.save(tasks);
                 }
 
                 else if (input.startsWith("event")) {
@@ -470,6 +211,7 @@ public class Viktor {
                     System.out.println(newTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println("_________________________________________");
+                    storage.save(tasks);
                 }
 
                 else {

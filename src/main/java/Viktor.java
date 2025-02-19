@@ -406,6 +406,30 @@ public class Viktor {
                     System.out.println("_________________________________________");
                 }
 
+                else if (input.startsWith("delete ")) {
+                    String[] parts = input.split(" ");
+                    if (parts.length != 2) {
+                        throw new ViktorException("Oops! Please specify a valid task number to delete.");
+                    }
+
+                    try {
+                        int taskIndex = Integer.parseInt(parts[1]) - 1;
+                        if (taskIndex < 0 || taskIndex >= tasks.size()) {
+                            throw new ViktorException("Oops! Task number does not exist.");
+                        }
+
+                        Task removedTask = tasks.remove(taskIndex);
+                        System.out.println("_________________________________________");
+                        System.out.println("Noted. I've removed this task:");
+                        System.out.println(removedTask);
+                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        System.out.println("_________________________________________");
+
+                    } catch (NumberFormatException e) {
+                        throw new ViktorException("Oops! Task number must be a valid number.");
+                    }
+                }
+
                 else if (input.startsWith("todo")) {
                     String taskDescription = input.substring(4).trim();
                     if (taskDescription.isEmpty()) {

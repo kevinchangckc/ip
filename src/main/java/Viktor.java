@@ -131,10 +131,15 @@ public class Viktor {
                     System.out.println("_________________________________________");
                     System.out.println("Goodbye! Have a great day.");
                     System.out.println("_________________________________________");
-                    storage.save(tasks); // Save before exit
+
+                    try {
+                        storage.save(tasks); // Save before exit
+                    } catch (IOException e) {
+                        System.out.println("Error: Unable to save tasks to file.");
+                    }
+
                     break;
                 }
-
                 else if (input.equalsIgnoreCase("list")) {
                     System.out.println("_________________________________________");
                     System.out.println("Here are your tasks:");
@@ -162,7 +167,11 @@ public class Viktor {
                         System.out.println(removedTask);
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                         System.out.println("_________________________________________");
-                        storage.save(tasks);
+                        try {
+                            storage.save(tasks); // Save before exit
+                        } catch (IOException e) {
+                            System.out.println("Error: Unable to save tasks to file.");
+                        }
 
                     } catch (NumberFormatException e) {
                         throw new ViktorException("Oops! Task number must be a valid number.");
@@ -181,7 +190,11 @@ public class Viktor {
                     System.out.println(newTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println("_________________________________________");
-                    storage.save(tasks);
+                    try {
+                        storage.save(tasks); // Save before exit
+                    } catch (IOException e) {
+                        System.out.println("Error: Unable to save tasks to file.");
+                    }
                 }
 
                 else if (input.startsWith("deadline")) {
@@ -196,7 +209,11 @@ public class Viktor {
                     System.out.println(newTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println("_________________________________________");
-                    storage.save(tasks);
+                    try {
+                        storage.save(tasks); // Save before exit
+                    } catch (IOException e) {
+                        System.out.println("Error: Unable to save tasks to file.");
+                    }
                 }
 
                 else if (input.startsWith("event")) {
@@ -211,7 +228,11 @@ public class Viktor {
                     System.out.println(newTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println("_________________________________________");
-                    storage.save(tasks);
+                    try {
+                        storage.save(tasks); // Save before exit
+                    } catch (IOException e) {
+                        System.out.println("Error: Unable to save tasks to file.");
+                    }
                 }
 
                 else {

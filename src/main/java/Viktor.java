@@ -1,6 +1,9 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 // UNIVERSAL TASK CLASS
 abstract class Task {
@@ -50,21 +53,22 @@ class ToDo extends Task {
 }
 
 class Deadline extends Task {
-    protected String by;
+    protected LocalDate dueDate; // ✅ Store LocalDate instead of String
 
-    public Deadline(String description, String by) {
+    public Deadline(String description, LocalDate dueDate) {
         super(description);
-        this.by = by;
+        this.dueDate = dueDate;
     }
 
     @Override
     public String toFileFormat() {
-        return "D | " + (isDone ? "1" : "0") + " | " + description + " | " + by;
+        return "D | " + (isDone ? "1" : "0") + " | " + description + " | " + dueDate.toString(); // ✅ Save date as ISO format
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy"); // ✅ Format date
+        return "[D]" + super.toString() + " (by: " + dueDate.format(formatter) + ")";
     }
 }
 
@@ -201,7 +205,8 @@ class Storage {
                         task = new ToDo(description);
                         break;
                     case "D":
-                        task = new Deadline(description, parts[3]);
+                        LocalDate date = LocalDate.parse(parts[3]); // ✅ Convert from String to LocalDate
+                        task = new Deadline(description, date);
                         break;
                     case "E":
                         task = new Event(description, parts[3], parts[4]);
@@ -256,8 +261,8 @@ class Parser {
             else if (input.equalsIgnoreCase("list")) {
                 ui.showTaskList(taskList);
             }
-            else if (input.startsWith("todo")) {
-                String taskDescription = input.substring(4).trim();
+            else if (input.startsWith("todo ")) {
+                String taskDescription = input.substring(5).trim();
                 if (taskDescription.isEmpty()) {
                     throw new ViktorException("Your todo task is empty. Please try again.");
                 }
@@ -265,6 +270,22 @@ class Parser {
                 taskList.addTask(newTask);
                 storage.save(taskList);
                 System.out.println("Added: " + newTask);
+            }
+            else if (input.startsWith("deadline ")) {
+                String[] parts = input.substring(9).split(" /by ");
+                if (parts.length < 2) {
+                    throw new ViktorException("Please specify a valid deadline format: deadline /by yyyy-MM-dd");
+                }
+
+                try {
+                    LocalDate dueDate = LocalDate.parse(parts[1]); // ✅ Convert string to LocalDate
+                    Task newTask = new Deadline(parts[0].trim(), dueDate);
+                    taskList.addTask(newTask);
+                    storage.save(taskList);
+                    System.out.println("Added: " + newTask);
+                } catch (DateTimeParseException e) {
+                    throw new ViktorException("Invalid date format! Please use yyyy-MM-dd.");
+                }
             }
             else {
                 throw new ViktorException("Invalid command. Try again.");

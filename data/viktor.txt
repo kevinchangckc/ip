@@ -1,0 +1,3 @@
+T | 0 | drink coffee
+T | 0 | coffee
+D | 0 | coffee | 2025-08-23

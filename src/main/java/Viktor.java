@@ -1,9 +1,8 @@
-import java.util.Scanner;
 import java.io.*;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
-// universal Task class
+// UNIVERSAL TASK CLASS
 abstract class Task {
     protected String description;
     protected boolean isDone;
@@ -25,7 +24,6 @@ abstract class Task {
         return (isDone ? "[X]" : "[ ]");
     }
 
-    // 🔹 Abstract method that subclasses must implement
     public abstract String toFileFormat();
 
     @Override
@@ -34,7 +32,7 @@ abstract class Task {
     }
 }
 
-// Level-4
+// TASK SUBCLASSES
 class ToDo extends Task {
     public ToDo(String description) {
         super(description);
@@ -91,188 +89,107 @@ class Event extends Task {
     }
 }
 
-
-// Level-5
+// CUSTOM EXCEPTION CLASS
 class ViktorException extends Exception {
     public ViktorException(String message) {
         super(message);
     }
 }
 
-public class Viktor {
-    private static final String FILE_PATH = "./data/viktor.txt"; // Ensure correct path
-    private static Storage storage;
-    private static ArrayList<Task> tasks;
+// UI CLASS (Handles User Interaction)
+class Ui {
+    private final Scanner scanner;
 
-    public static void main(String[] args) {
-        storage = new Storage(FILE_PATH);
+    public Ui() {
+        this.scanner = new Scanner(System.in);
+    }
 
-        // Load tasks from file
-        try {
-            tasks = storage.load();
-        } catch (IOException e) {
-            System.out.println("Error loading tasks from file. Starting fresh.");
-            tasks = new ArrayList<>();
-        }
+    public String readCommand() {
+        return scanner.nextLine();
+    }
 
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
-
+    public void showWelcomeMessage() {
         System.out.println("_________________________________________");
         System.out.println("Hi there. I'm Viktor.");
         System.out.println("How can I help you?");
         System.out.println("_________________________________________");
+    }
 
-        while (true) {
-            String input = scanner.nextLine();
+    public void showExitMessage() {
+        System.out.println("_________________________________________");
+        System.out.println("Goodbye! Have a great day.");
+        System.out.println("_________________________________________");
+    }
 
-            try {
-                if (input.equalsIgnoreCase("bye")) {
-                    System.out.println("_________________________________________");
-                    System.out.println("Goodbye! Have a great day.");
-                    System.out.println("_________________________________________");
+    public void showError(String message) {
+        System.out.println("Error: " + message);
+    }
 
-                    try {
-                        storage.save(tasks); // Save before exit
-                    } catch (IOException e) {
-                        System.out.println("Error: Unable to save tasks to file.");
-                    }
-
-                    break;
-                }
-                else if (input.equalsIgnoreCase("list")) {
-                    System.out.println("_________________________________________");
-                    System.out.println("Here are your tasks:");
-                    for (int i = 0; i < tasks.size(); i++) {
-                        System.out.println((i + 1) + ". " + tasks.get(i));
-                    }
-                    System.out.println("_________________________________________");
-                }
-
-                else if (input.startsWith("delete ")) {
-                    String[] parts = input.split(" ");
-                    if (parts.length != 2) {
-                        throw new ViktorException("Oops! Please specify a valid task number to delete.");
-                    }
-
-                    try {
-                        int taskIndex = Integer.parseInt(parts[1]) - 1;
-                        if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                            throw new ViktorException("Oops! Task number does not exist.");
-                        }
-
-                        Task removedTask = tasks.remove(taskIndex);
-                        System.out.println("_________________________________________");
-                        System.out.println("Noted. I've removed this task:");
-                        System.out.println(removedTask);
-                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                        System.out.println("_________________________________________");
-                        try {
-                            storage.save(tasks); // Save before exit
-                        } catch (IOException e) {
-                            System.out.println("Error: Unable to save tasks to file.");
-                        }
-
-                    } catch (NumberFormatException e) {
-                        throw new ViktorException("Oops! Task number must be a valid number.");
-                    }
-                }
-
-                else if (input.startsWith("todo")) {
-                    String taskDescription = input.substring(4).trim();
-                    if (taskDescription.isEmpty()) {
-                        throw new ViktorException("I'm afraid your todo task is empty. Please try again.");
-                    }
-                    Task newTask = new ToDo(taskDescription);
-                    tasks.add(newTask);
-                    System.out.println("_________________________________________");
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println(newTask);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println("_________________________________________");
-                    try {
-                        storage.save(tasks); // Save before exit
-                    } catch (IOException e) {
-                        System.out.println("Error: Unable to save tasks to file.");
-                    }
-                }
-
-                else if (input.startsWith("deadline")) {
-                    String[] parts = input.substring(8).split(" /by ");
-                    if (parts.length < 2) {
-                        throw new ViktorException("I'm afraid you didn't include a deadline. Please specify a deadline using '/by'.");
-                    }
-                    Task newTask = new Deadline(parts[0], parts[1]);
-                    tasks.add(newTask);
-                    System.out.println("_________________________________________");
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println(newTask);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println("_________________________________________");
-                    try {
-                        storage.save(tasks); // Save before exit
-                    } catch (IOException e) {
-                        System.out.println("Error: Unable to save tasks to file.");
-                    }
-                }
-
-                else if (input.startsWith("event")) {
-                    String[] parts = input.substring(5).split(" /from | /to ");
-                    if (parts.length < 3) {
-                        throw new ViktorException("Please use '/from' and '/to' for event timing.");
-                    }
-                    Task newTask = new Event(parts[0], parts[1], parts[2]);
-                    tasks.add(newTask);
-                    System.out.println("_________________________________________");
-                    System.out.println("Noted. I've added this task:");
-                    System.out.println(newTask);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println("_________________________________________");
-                    try {
-                        storage.save(tasks); // Save before exit
-                    } catch (IOException e) {
-                        System.out.println("Error: Unable to save tasks to file.");
-                    }
-                }
-
-                else {
-                    throw new ViktorException("I'm afraid don't understand your command. Please try again.");
-                }
-
-            } catch (ViktorException e) {
-                System.out.println("_________________________________________");
-                System.out.println(e.getMessage());
-                System.out.println("_________________________________________");
-            }
+    public void showTaskList(TaskList taskList) {
+        System.out.println("_________________________________________");
+        System.out.println("Here are your tasks:");
+        for (int i = 0; i < taskList.size(); i++) {
+            System.out.println((i + 1) + ". " + taskList.get(i));
         }
-
-        scanner.close();
+        System.out.println("_________________________________________");
     }
 }
 
-// Level-7
- class Storage {
+// TASKLIST CLASS (Handles Task Operations)
+class TaskList {
+    private ArrayList<Task> tasks;
+
+    public TaskList() {
+        this.tasks = new ArrayList<>();
+    }
+
+    public TaskList(ArrayList<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public Task removeTask(int index) {
+        return tasks.remove(index);
+    }
+
+    public int size() {
+        return tasks.size();
+    }
+
+    public Task get(int index) {
+        return tasks.get(index);
+    }
+
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+}
+
+// STORAGE CLASS (Handles File Operations)
+class Storage {
     private String filePath;
 
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
-    // Load tasks from file
-    public ArrayList<Task> load() throws IOException {
+    public TaskList load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
 
         if (!file.exists()) {
             System.out.println("No previous tasks found. Starting fresh!");
-            return tasks; // Return an empty task list
+            return new TaskList(tasks);
         }
 
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(" \\| ");
-                if (parts.length < 3) continue; // Skip invalid lines
+                if (parts.length < 3) continue;
 
                 String type = parts[0];
                 boolean isDone = parts[1].equals("1");
@@ -290,31 +207,101 @@ public class Viktor {
                         task = new Event(description, parts[3], parts[4]);
                         break;
                     default:
-                        continue; // Skip unknown task types
+                        continue;
                 }
                 if (isDone) task.markAsDone();
                 tasks.add(task);
             }
         } catch (Exception e) {
             System.out.println("Warning: Corrupted data file. Starting fresh!");
-            tasks.clear(); // Clear and start new list
+            tasks.clear();
         }
-        return tasks;
+        return new TaskList(tasks);
     }
 
-    // Save tasks to file
-    public void save(ArrayList<Task> tasks) throws IOException {
+    public void save(TaskList taskList) throws IOException {
         File file = new File(filePath);
         File directory = file.getParentFile();
         if (directory != null && !directory.exists()) {
-            directory.mkdirs(); // Create directories if they don’t exist
+            directory.mkdirs();
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Task task : tasks) {
+            for (Task task : taskList.getTasks()) {
                 writer.write(task.toFileFormat() + "\n");
             }
         }
     }
 }
 
+// PARSER CLASS (Handles Command Processing)
+class Parser {
+    private final Ui ui;
+    private final TaskList taskList;
+    private final Storage storage;
+
+    public Parser(Ui ui, TaskList taskList, Storage storage) {
+        this.ui = ui;
+        this.taskList = taskList;
+        this.storage = storage;
+    }
+
+    public void handleCommand(String input) {
+        try {
+            if (input.equalsIgnoreCase("bye")) {
+                ui.showExitMessage();
+                storage.save(taskList);
+                System.exit(0);
+            }
+            else if (input.equalsIgnoreCase("list")) {
+                ui.showTaskList(taskList);
+            }
+            else if (input.startsWith("todo")) {
+                String taskDescription = input.substring(4).trim();
+                if (taskDescription.isEmpty()) {
+                    throw new ViktorException("Your todo task is empty. Please try again.");
+                }
+                Task newTask = new ToDo(taskDescription);
+                taskList.addTask(newTask);
+                storage.save(taskList);
+                System.out.println("Added: " + newTask);
+            }
+            else {
+                throw new ViktorException("Invalid command. Try again.");
+            }
+        } catch (ViktorException | IOException e) {
+            ui.showError(e.getMessage());
+        }
+    }
+}
+
+// MAIN CLASS
+public class Viktor {
+    private Storage storage;
+    private TaskList tasks;
+    private Ui ui;
+    private Parser parser;
+
+    public Viktor(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        try {
+            tasks = storage.load();
+        } catch (IOException e) {
+            ui.showError("Error loading tasks. Starting fresh.");
+            tasks = new TaskList();
+        }
+        parser = new Parser(ui, tasks, storage);
+    }
+
+    public void run() {
+        ui.showWelcomeMessage();
+        while (true) {
+            String input = ui.readCommand();
+            parser.handleCommand(input);
+        }
+    }
+
+    public static void main(String[] args) {
+        new Viktor("data/viktor.txt").run();
+    }}

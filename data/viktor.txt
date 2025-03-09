@@ -1,3 +1,7 @@
 T | 0 | drink coffee
 T | 0 | coffee
 D | 0 | coffee | 2025-08-23
+D | 0 | coffee | 2025-08-23
+T | 0 | read book
+D | 0 | return book | 2025-03-10
+T | 0 | buy groceries

@@ -137,6 +137,19 @@ class Ui {
         }
         System.out.println("_________________________________________");
     }
+
+    public void showFindResults(ArrayList<Task> matchingTasks) {
+        System.out.println("_________________________________________");
+        if (matchingTasks.isEmpty()) {
+            System.out.println("No matching tasks found.");
+        } else {
+            System.out.println("Here are the matching tasks in your list:");
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                System.out.println((i + 1) + ". " + matchingTasks.get(i));
+            }
+        }
+        System.out.println("_________________________________________");
+    }
 }
 
 // TASKLIST CLASS (Handles Task Operations)
@@ -169,6 +182,16 @@ class TaskList {
 
     public ArrayList<Task> getTasks() {
         return tasks;
+    }
+
+    public ArrayList<Task> findTasks(String keyword) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.description.toLowerCase().contains(keyword.toLowerCase())) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
     }
 }
 
@@ -278,7 +301,7 @@ class Parser {
                 }
 
                 try {
-                    LocalDate dueDate = LocalDate.parse(parts[1]); // ✅ Convert string to LocalDate
+                    LocalDate dueDate = LocalDate.parse(parts[1]);
                     Task newTask = new Deadline(parts[0].trim(), dueDate);
                     taskList.addTask(newTask);
                     storage.save(taskList);
@@ -287,6 +310,16 @@ class Parser {
                     throw new ViktorException("Invalid date format! Please use yyyy-MM-dd.");
                 }
             }
+
+            else if (input.startsWith("find ")) {
+                String keyword = input.substring(5).trim();
+                if (keyword.isEmpty()) {
+                    throw new ViktorException("Please enter a keyword to search.");
+                }
+                ArrayList<Task> matchingTasks = taskList.findTasks(keyword);
+                ui.showFindResults(matchingTasks);
+            }
+
             else {
                 throw new ViktorException("Invalid command. Try again.");
             }

@@ -1,5 +1,5 @@
 # Viktor User Guide
-![docs/Victor Screenshot.png]
+![ViktorScreenshot.png](ViktorScreenshot.png)
 
 ## INTRODUCTION
 

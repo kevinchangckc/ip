@@ -1,5 +1,5 @@
 # Viktor User Guide
-![Screenshot 2025-03-11 at 11.07.32 AM.png](../../../../../var/folders/2q/q0b75k3d7rd0mh2z42k49zvr0000gn/T/TemporaryItems/NSIRD_screencaptureui_GLibCQ/Screenshot%202025-03-11%20at%2011.07.32%E2%80%AFAM.png)
+![Screenshot 2025-03-11 at 3.03.45 PM.png](../../../Desktop/Screenshot%202025-03-11%20at%203.03.45%E2%80%AFPM.png)
 
 ## INTRODUCTION
 

@@ -1,5 +1,5 @@
 # Viktor User Guide
-![Screenshot 2025-03-11 at 3.03.45 PM.png](../../../Desktop/Screenshot%202025-03-11%20at%203.03.45%E2%80%AFPM.png)
+![docs/Victor Screenshot.png]
 
 ## INTRODUCTION
 

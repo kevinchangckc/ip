@@ -5,28 +5,48 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-// UNIVERSAL TASK CLASS
+/**
+ * Represents a generic task with a description and completion status.
+ */
 abstract class Task {
     protected String description;
     protected boolean isDone;
 
+    /**
+     * Constructs a new Task.
+     * @param description Description of the task.
+     */
     public Task(String description) {
         this.description = description;
         this.isDone = false;
     }
 
+    /**
+     * Marks the task as completed.
+     */
     public void markAsDone() {
         this.isDone = true;
     }
 
+    /**
+     * Marks the task as not done.
+     */
     public void markAsNotDone() {
         this.isDone = false;
     }
 
+    /**
+     * Returns the status icon of the task.
+     * @return "[X]" if task is completed, "[ ]" otherwise.
+     */
     public String getStatusIcon() {
         return (isDone ? "[X]" : "[ ]");
     }
 
+    /**
+     * Converts the task into a file-friendly format for storage.
+     * @return Formatted string for storage.
+     */
     public abstract String toFileFormat();
 
     @Override
@@ -35,7 +55,9 @@ abstract class Task {
     }
 }
 
-// TASK SUBCLASSES
+/**
+ * Represents a To-Do task.
+ */
 class ToDo extends Task {
     public ToDo(String description) {
         super(description);
@@ -52,9 +74,17 @@ class ToDo extends Task {
     }
 }
 
+/**
+ * Represents a deadline task with a due date.
+ */
 class Deadline extends Task {
     protected LocalDate dueDate; // ✅ Store LocalDate instead of String
 
+    /**
+     * Constructs a Deadline task with a description and due date.
+     * @param description Description of the deadline task.
+     * @param dueDate The due date in LocalDate format.
+     */
     public Deadline(String description, LocalDate dueDate) {
         super(description);
         this.dueDate = dueDate;
@@ -72,10 +102,19 @@ class Deadline extends Task {
     }
 }
 
+/**
+ * Represents an event task with a start and end time.
+ */
 class Event extends Task {
     protected String from;
     protected String to;
 
+    /**
+     * Constructs an Event task with a description, start time, and end time.
+     * @param description Description of the event.
+     * @param from Start time of the event.
+     * @param to End time of the event.
+     */
     public Event(String description, String from, String to) {
         super(description);
         this.from = from;
@@ -93,14 +132,18 @@ class Event extends Task {
     }
 }
 
-// CUSTOM EXCEPTION CLASS
+/**
+ * Custom exception class for chatbot errors.
+ */
 class ViktorException extends Exception {
     public ViktorException(String message) {
         super(message);
     }
 }
 
-// UI CLASS (Handles User Interaction)
+/**
+ * Handles user interactions with the chatbot.
+ */
 class Ui {
     private final Scanner scanner;
 
@@ -195,7 +238,9 @@ class TaskList {
     }
 }
 
-// STORAGE CLASS (Handles File Operations)
+/**
+ * Stores and retrieves tasks from a file.
+ */
 class Storage {
     private String filePath;
 
@@ -329,7 +374,10 @@ class Parser {
     }
 }
 
-// MAIN CLASS
+
+/**
+ * Main chatbot class that initializes components and handles user input.
+ */
 public class Viktor {
     private Storage storage;
     private TaskList tasks;

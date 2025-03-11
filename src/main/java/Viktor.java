@@ -137,7 +137,7 @@ class Event extends Task {
  */
 class ViktorException extends Exception {
     public ViktorException(String message) {
-        super(message);
+        super("⚠ " + message + " The pursuit of progress demands precision.");
     }
 }
 
@@ -157,36 +157,51 @@ class Ui {
 
     public void showWelcomeMessage() {
         System.out.println("_________________________________________");
-        System.out.println("Hi there. I'm Viktor.");
-        System.out.println("How can I help you?");
+        System.out.println("Greetings. I am Viktor.");
+        System.out.println("Progress must be forged, not waited upon.");
+        // ASCII Art for "VIKTOR"
+        System.out.println("         _   _      _                  ");
+        System.out.println("__   __ (_) | | __ | |_    ___    _ __ ");
+        System.out.println("\\ \\ / / | | | |/ / | __|  / _ \\  | '__|");
+        System.out.println(" \\ V /  | | |   <  | |_  | (_) | | |   ");
+        System.out.println("  \\_/   |_| |_|\\" + "_\\  \\__|  \\___/  |_|   ");
+        System.out.println("_________________________________________");
+
+        System.out.println("State your intent.");
         System.out.println("_________________________________________");
     }
 
     public void showExitMessage() {
         System.out.println("_________________________________________");
-        System.out.println("Goodbye! Have a great day.");
+        System.out.println("There is still much work to be done.");
+        System.out.println("Progress does not cease. Neither should you.");
+        System.out.println("Farewell.");
         System.out.println("_________________________________________");
     }
 
     public void showError(String message) {
-        System.out.println("Error: " + message);
+        System.out.println("⚠ ERROR: " + message);
+        System.out.println("A flaw in the system... but flaws can be corrected.");
     }
 
     public void showTaskList(TaskList taskList) {
         System.out.println("_________________________________________");
-        System.out.println("Here are your tasks:");
-        for (int i = 0; i < taskList.size(); i++) {
-            System.out.println((i + 1) + ". " + taskList.get(i));
+        if (taskList.size() == 0) {
+            System.out.println("Your list is empty. A void waiting to be filled.");
+        } else {
+            System.out.println("Task registry active:");
+            for (int i = 0; i < taskList.size(); i++) {
+                System.out.println((i + 1) + ". " + taskList.get(i));
+            }
         }
         System.out.println("_________________________________________");
     }
-
     public void showFindResults(ArrayList<Task> matchingTasks) {
         System.out.println("_________________________________________");
         if (matchingTasks.isEmpty()) {
-            System.out.println("No matching tasks found.");
+            System.out.println("Flawed input. No matches found. Refine your search.");
         } else {
-            System.out.println("Here are the matching tasks in your list:");
+            System.out.println("Pattern identified. These tasks align with your query:");
             for (int i = 0; i < matchingTasks.size(); i++) {
                 System.out.println((i + 1) + ". " + matchingTasks.get(i));
             }
@@ -253,7 +268,7 @@ class Storage {
         File file = new File(filePath);
 
         if (!file.exists()) {
-            System.out.println("No previous tasks found. Starting fresh!");
+            System.out.println("No prior data detected. A blank slate... full of potential.");
             return new TaskList(tasks);
         }
 
@@ -273,7 +288,7 @@ class Storage {
                         task = new ToDo(description);
                         break;
                     case "D":
-                        LocalDate date = LocalDate.parse(parts[3]); // ✅ Convert from String to LocalDate
+                        LocalDate date = LocalDate.parse(parts[3]); //  Convert from String to LocalDate
                         task = new Deadline(description, date);
                         break;
                     case "E":
@@ -286,7 +301,7 @@ class Storage {
                 tasks.add(task);
             }
         } catch (Exception e) {
-            System.out.println("Warning: Corrupted data file. Starting fresh!");
+            System.out.println("⚠ The past is irrelevant. Only progress endures. Reconstructing from the beginning.");
             tasks.clear();
         }
         return new TaskList(tasks);
@@ -332,17 +347,19 @@ class Parser {
             else if (input.startsWith("todo ")) {
                 String taskDescription = input.substring(5).trim();
                 if (taskDescription.isEmpty()) {
-                    throw new ViktorException("Your todo task is empty. Please try again.");
+                    throw new ViktorException("An empty task... devoid of purpose. " +
+                            "Provide a task description.");
                 }
                 Task newTask = new ToDo(taskDescription);
                 taskList.addTask(newTask);
                 storage.save(taskList);
-                System.out.println("Added: " + newTask);
+                System.out.println("Task acquired: " + newTask);
+                System.out.println("Efficiency is paramount.");
             }
             else if (input.startsWith("deadline ")) {
                 String[] parts = input.substring(9).split(" /by ");
                 if (parts.length < 2) {
-                    throw new ViktorException("Please specify a valid deadline format: deadline /by yyyy-MM-dd");
+                    throw new ViktorException("Your input lacks order. Use the proper format: deadline /by yyyy-MM-dd.");
                 }
 
                 try {
@@ -350,23 +367,94 @@ class Parser {
                     Task newTask = new Deadline(parts[0].trim(), dueDate);
                     taskList.addTask(newTask);
                     storage.save(taskList);
-                    System.out.println("Added: " + newTask);
+                    System.out.println("Task acquired: " + newTask);
+                    System.out.println("Efficiency is paramount.");
                 } catch (DateTimeParseException e) {
-                    throw new ViktorException("Invalid date format! Please use yyyy-MM-dd.");
+                    throw new ViktorException("Time is the foundation of progress. " +
+                            "Yet, you distort it. Use yyyy-MM-dd.");
+                }
+            }
+
+            // Add an Event task
+            else if (input.startsWith("event ")) {
+                String[] parts = input.substring(6).split(" /from | /to ");
+                if (parts.length == 3) {
+                    Task newTask = new Event(parts[0], parts[1], parts[2]);
+                    taskList.addTask(newTask);
+                    System.out.println("_________________________________________");
+                    System.out.println("Task acquired: " + newTask);
+                    System.out.println("Efficiency is paramount.");
+                    System.out.println("_________________________________________");
+                } else {
+                    System.out.println("Time is the foundation of progress. " +
+                            "Yet, you distort it. Use: event <task> /from <start time> /to <end time>");
                 }
             }
 
             else if (input.startsWith("find ")) {
                 String keyword = input.substring(5).trim();
                 if (keyword.isEmpty()) {
-                    throw new ViktorException("Please enter a keyword to search.");
+                    throw new ViktorException("Input required. Precision is key—state your query.");
                 }
                 ArrayList<Task> matchingTasks = taskList.findTasks(keyword);
                 ui.showFindResults(matchingTasks);
             }
 
+            // Mark a task as done
+            else if (input.startsWith("done ")) {
+                try {
+                    int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
+                    taskList.get(taskIndex).markAsDone();
+                    System.out.println("_________________________________________");
+                    System.out.println("Progress achieved:");
+                    System.out.println(taskList.get(taskIndex));
+                    System.out.println("_________________________________________");
+                } catch (Exception e) {
+                    System.out.println("That task does not exist.Provide a valid number.");
+                }
+            }
+
+            // Mark a task as not done
+            else if (input.startsWith("unmark ")) {
+                try {
+                    int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
+                    taskList.get(taskIndex).markAsNotDone();
+                    System.out.println("_________________________________________");
+                    System.out.println("Task unmarked:");
+                    System.out.println(taskList.get(taskIndex));
+                    System.out.println("_________________________________________");
+                } catch (Exception e) {
+                    System.out.println("That task does not exist.Provide a valid number.");
+                }
+            }
+
+            else if (input.startsWith("delete ")) {
+                try {
+                    int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
+
+                    if (taskIndex < 0 || taskIndex >= taskList.size()) {
+                        throw new ViktorException("Flawed input. No such task exists. Refine your selection.");
+                    }
+
+                    Task removedTask = taskList.get(taskIndex);
+                    taskList.removeTask(taskIndex);
+                    storage.save(taskList);
+
+                    System.out.println("_________________________________________");
+                    System.out.println("Task purged: " + removedTask);
+                    System.out.println("Only the essential remains.");
+                    System.out.println("Now you have " + taskList.size() + " tasks in the list.");
+                    System.out.println("_________________________________________");
+
+                } catch (NumberFormatException e) {
+                    throw new ViktorException("Miscalculation detected. Provide a valid numeric identifier.");
+                } catch (IOException e) {
+                    throw new ViktorException("Anomalous failure. Task removal was not persisted.");
+                }
+            }
+
             else {
-                throw new ViktorException("Invalid command. Try again.");
+                throw new ViktorException("Invalid input. Progress requires clarity. Recalibrate your command.");
             }
         } catch (ViktorException | IOException e) {
             ui.showError(e.getMessage());
@@ -390,7 +478,7 @@ public class Viktor {
         try {
             tasks = storage.load();
         } catch (IOException e) {
-            ui.showError("Error loading tasks. Starting fresh.");
+            ui.showError("Data integrity compromised. Reconstruction is necessary.");
             tasks = new TaskList();
         }
         parser = new Parser(ui, tasks, storage);
